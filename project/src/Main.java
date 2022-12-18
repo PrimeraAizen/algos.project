@@ -23,6 +23,7 @@ public class Main {
         profiles.add(default1);
         profiles.add(default2);
 
+
     }
 
     public static void loginPage() {
