@@ -33,6 +33,7 @@ class Profile {
             }
         }
     }
+
     public void showProfile(){
         System.out.println("Name: " + name);
         System.out.println("Surname: " + surname);

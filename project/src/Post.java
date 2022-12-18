@@ -35,4 +35,5 @@ class Post {
     public ArrayList<String> getComments() {
         return comments;
     }
+
 }
