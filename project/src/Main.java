@@ -22,6 +22,7 @@ public class Main {
         default2.post("I'm the captain of Strawhat Pirates");
         profiles.add(default1);
         profiles.add(default2);
+
     }
 
     public static void loginPage() {
