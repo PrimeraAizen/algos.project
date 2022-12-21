@@ -1,11 +1,13 @@
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Scanner;
 
 public class Main {
     static Scanner scanner = new Scanner(System.in);
     static Profile currentProfile;
     static ArrayList<Profile> profiles = new ArrayList<>();
+    static ArrayList<Max_count> maxCounts = new ArrayList<>();
 
     public static void main(String[] args) {
         defaultUsers();
@@ -16,12 +18,16 @@ public class Main {
     public static void defaultUsers() {
         Profile default1 = new Profile("Ace", "Portgas D.", 19, "Male", "d_ace@sdu.kz", "+111", "Gold");
         Profile default2 = new Profile("Luffy", "Monkey D.", 19, "Male", "luffy@sdu.kz", "+222", "pirateking");
+        Profile default3 = new Profile("IIIedry", "King", 19, "Male", "IIIedry1203@sdu.kz", "+333", "IIIedry");
+        Profile default4 = new Profile("Natsu", "Dragnyl", 19, "Male", "luffy@sdu.kz", "+444", "fire");
         default1.post("My name is Portgas D. Ace, the second commander of Whitebeard Pirates.");
         default1.post("My father is the king of pirate Gol D. Roger");
         default2.post("I'm Monkey D. Luffy. The guy who will become the king of the pirates.");
         default2.post("I'm the captain of Strawhat Pirates");
         profiles.add(default1);
         profiles.add(default2);
+        profiles.add(default3);
+        profiles.add(default4);
 
 
     }
@@ -32,6 +38,7 @@ public class Main {
             System.out.println("Are you a new user? (yes/no)");
             String answer = scanner.nextLine();
             if (answer.equalsIgnoreCase("yes")) {
+                isRunning = false;
                 System.out.println("Please enter your name:");
                 String name = scanner.nextLine();
                 System.out.println("Please enter your surname:");
@@ -52,15 +59,25 @@ public class Main {
                 currentProfile = profile1;
                 profilePage(currentProfile);
             } else if (answer.equalsIgnoreCase("no")) {
-                System.out.println("Please, enter your email:");
-                String email = scanner.nextLine();
-                System.out.println("Please, enter your password:");
-                String password = scanner.nextLine();
-                for (Profile profile : profiles) {
-                    if (profile.getEmail().equals(email) && profile.getPassword().equals(password)) {
-                        System.out.println("Welcome, " + profile.getName() + "!");
-                        currentProfile = profile;
-                        profilePage(currentProfile);
+                isRunning = false;
+                boolean check = true;
+                while (check) {
+                    System.out.println("Please, enter your email:");
+                    String email = scanner.nextLine();
+                    for (int i = 0; i < profiles.size(); i++) {
+                        if (email.equals(profiles.get(i).getEmail())) {
+                            System.out.println("Please, enter your password:");
+                            String password = scanner.nextLine();
+                            if (password.equals(profiles.get(i).getPassword())) {
+                                currentProfile = profiles.get(i);
+                                check = false;
+                                profilePage(currentProfile);
+                            } else {
+                                System.out.println("Wrong password!");
+                                System.out.println("Please, try again!");
+                                System.out.println();
+                            }
+                        }
                     }
                 }
             } else {
@@ -76,6 +93,9 @@ public class Main {
         System.out.println("2. Show my posts");
         System.out.println("3. Show my profile");
         System.out.println("4. Show list of users");
+        System.out.println("5. Show list of maximum like posts");
+        System.out.println("6. Show list of Descending like posts");
+        System.out.println("7. Show list of highest Common subscribers");
         int answer = scanner.nextInt();
         scanner.nextLine();
         switch (answer) {
@@ -95,6 +115,15 @@ public class Main {
             }
             case 4 -> {
                 showUsers(profile);
+            }
+            case 5 -> {
+                showMaxLikePosts();
+            }
+            case 6 -> {
+                showDescendingLikePosts();
+            }
+            case 7 -> {
+                showMaxCommonSubscribers();
             }
             case 0 -> loginPage();
 
@@ -217,6 +246,141 @@ public class Main {
                     System.out.println();
                 }
                 showPost(profile);
+            }
+        }
+    }
+
+    public static void showDescendingLikePosts() {
+System.out.println("Enter the number of place: ");
+        System.out.println("0. Go Back");
+        System.out.println("1. Show posts with max and descending likes");
+        int answer = scanner.nextInt();
+        scanner.nextLine();
+        if (answer == 0) profilePage(currentProfile);
+        int max = 0;
+        for (Profile profile : profiles) {
+            for (Post post : profile.getPosts()) {
+                if (post.getLikes() > max) {
+                    max = post.getLikes();
+                }
+            }
+        }
+        int count = 0;
+        for (Profile profile : profiles) {
+            for (Post post : profile.getPosts()) {
+                if (post.getLikes() <= max) {
+                    count++;
+                }
+            }
+        }
+        Post[] posts = new Post[count];
+        int i = 0;
+        for (Profile profile : profiles) {
+            for (Post post : profile.getPosts()) {
+                if (post.getLikes() <= max) {
+                    posts[i] = post;
+                    i++;
+                }
+            }
+        }
+        posts = sort(posts);
+        for (int j = 0; j < posts.length; j++) {
+            System.out.println(j + 1 + ". " + posts[j].getText());
+            }
+        showDescendingLikePosts();
+    }
+    private static Post[] sort(Post[] posts) {
+        for (int i = 0; i < posts.length; i++) {
+            for (int j = 0; j < posts.length - 1; j++) {
+                if (posts[j].getLikes() < posts[j + 1].getLikes()) {
+                    Post temp = posts[j];
+                    posts[j] = posts[j + 1];
+                    posts[j + 1] = temp;
+                }
+            }
+        }
+        return posts;
+    }
+    private static void showMaxLikePosts(){
+        boolean flag = true;
+        while(flag) {
+            System.out.println("Enter the number of place: ");
+            System.out.println("0. Go Back");
+            System.out.println("1. Show posts with max likes");
+            int answer = scanner.nextInt();
+            if (answer == 0 || answer == 1) {
+                scanner.nextLine();
+                if (answer == 0) profilePage(currentProfile);
+                int max = 0;
+                for (Profile profile : profiles) {
+                    for (Post post : profile.getPosts()) {
+                        if (post.getLikes() > max) {
+                            max = post.getLikes();
+                        }
+                    }
+                }
+                for (Profile profile : profiles) {
+                    for (Post post : profile.getPosts()) {
+                        if (post.getLikes() == max) {
+                            System.out.println(post.getText());
+                        }
+                    }
+                }
+
+                showMaxLikePosts();
+                flag = false;
+            } else {
+                System.out.println("Enter a message from the selection");
+                System.out.println();
+            }
+        }
+    }
+    /*
+    checking which your subscriber has the highest number of common subscribers with count of your subscribers
+    если нет общих подписчиков, то выводит сообщение "You don't have common subscribers"
+     */
+    private static void showMaxCommonSubscribers() {
+        boolean flag = true;
+        while(flag) {
+            System.out.println("Enter the number of place: ");
+            System.out.println("0. Go Back");
+            System.out.println("1. Show users with max common subscribers");
+            int answer = scanner.nextInt();
+            if (answer == 0 || answer == 1) {
+                scanner.nextLine();
+                if (answer == 0) profilePage(currentProfile);
+                int max = 0;
+                for (Profile profile : profiles) {
+                    if (currentProfile.getFollowers().contains(profile)) {
+                        for (Profile profile1 : profiles) {
+                            if (profile.getFollowers().contains(profile1)) {
+                                if (currentProfile.getFollowers().contains(profile1)) {
+                                    max++;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (max == 0) {
+                    System.out.println("You don't have common subscribers");
+                } else {
+                    for (Profile profile : profiles) {
+                        if (currentProfile.getFollowers().contains(profile)) {
+                            for (Profile profile1 : profiles) {
+                                if (profile.getFollowers().contains(profile1)) {
+                                    if (currentProfile.getFollowers().contains(profile1)) {
+                                        System.out.println(profile1.getName());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                showMaxCommonSubscribers();
+                flag = false;
+            } else {
+                System.out.println("Enter a message from the selection");
+                System.out.println();
             }
         }
     }

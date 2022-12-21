@@ -5,6 +5,9 @@ class Post {
     private String text;
     private ArrayList<String> comments = new ArrayList<>();
     private ArrayList<Profile> likedUsers = new ArrayList<>();
+
+
+
     public int getLikes() {
         return likes;
     }
@@ -35,5 +38,4 @@ class Post {
     public ArrayList<String> getComments() {
         return comments;
     }
-
 }
