@@ -116,5 +116,116 @@ class Profile {
         posts.add(post);
     }
 
-
+    /* Sort posts by number of likes using insertion sort*/
+    public void sortPostsInsertion(){
+        for (int i = 1; i < posts.size(); i++) {
+            Post key = posts.get(i);
+            int j = i - 1;
+            while(j >= 0 && posts.get(j).getLikes() < key.getLikes()){
+                posts.set(j + 1, posts.get(j));
+                j--;
+            }
+            posts.set(j + 1, key);
+        }
+    }
+    /* Sort posts by number of likes using selection sort*/
+    public void sortPostsSelection(){
+        for (int i = 0; i < posts.size(); i++) {
+            int max = i;
+            for (int j = i + 1; j < posts.size(); j++) {
+                if(posts.get(j).getLikes() > posts.get(max).getLikes()){
+                    max = j;
+                }
+            }
+            Post temp = posts.get(i);
+            posts.set(i, posts.get(max));
+            posts.set(max, temp);
+        }
+    }
+    /* Sort posts by number of likes using bubble sort*/
+    public void sortPostsBubble(){
+        for (int i = 0; i < posts.size(); i++) {
+            for (int j = 0; j < posts.size() - 1; j++) {
+                if(posts.get(j).getLikes() < posts.get(j + 1).getLikes()){
+                    Post temp = posts.get(j);
+                    posts.set(j, posts.get(j + 1));
+                    posts.set(j + 1, temp);
+                }
+            }
+        }
+    }
+    /* Sort posts by number of likes using merge sort*/
+    public void sortPostsMerge(){
+        posts = mergeSort(posts);
+    }
+    private ArrayList<Post> mergeSort(ArrayList<Post> posts){
+        if(posts.size() == 1){
+            return posts;
+        }
+        ArrayList<Post> left = new ArrayList<>();
+        ArrayList<Post> right = new ArrayList<>();
+        for (int i = 0; i < posts.size(); i++) {
+            if(i < posts.size() / 2){
+                left.add(posts.get(i));
+            }
+            else{
+                right.add(posts.get(i));
+            }
+        }
+        left = mergeSort(left);
+        right = mergeSort(right);
+        return merge(left, right);
+    }
+    private ArrayList<Post> merge(ArrayList<Post> left, ArrayList<Post> right){
+        ArrayList<Post> result = new ArrayList<>();
+        int leftIndex = 0;
+        int rightIndex = 0;
+        while(leftIndex < left.size() && rightIndex < right.size()){
+            if(left.get(leftIndex).getLikes() > right.get(rightIndex).getLikes()){
+                result.add(left.get(leftIndex));
+                leftIndex++;
+            }
+            else{
+                result.add(right.get(rightIndex));
+                rightIndex++;
+            }
+        }
+        while(leftIndex < left.size()){
+            result.add(left.get(leftIndex));
+            leftIndex++;
+        }
+        while(rightIndex < right.size()){
+            result.add(right.get(rightIndex));
+            rightIndex++;
+        }
+        return result;
+    }
+    /* Sort posts by number of likes using quick sort*/
+    public void sortPostsQuick(){
+        posts = quickSort(posts, 0, posts.size() - 1);
+    }
+    private ArrayList<Post> quickSort(ArrayList<Post> posts, int left, int right){
+        if(left < right){
+            int pivot = partition(posts, left, right);
+            quickSort(posts, left, pivot - 1);
+            quickSort(posts, pivot + 1, right);
+        }
+        return posts;
+    }
+    private int partition(ArrayList<Post> posts, int left, int right){
+        int pivot = posts.get(right).getLikes();
+        int i = left - 1;
+        for (int j = left; j < right; j++) {
+            if(posts.get(j).getLikes() > pivot){
+                i++;
+                Post temp = posts.get(i);
+                posts.set(i, posts.get(j));
+                posts.set(j, temp);
+            }
+        }
+        Post temp = posts.get(i + 1);
+        posts.set(i + 1, posts.get(right));
+        posts.set(right, temp);
+        return i + 1;
+    }
 }

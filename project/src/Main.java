@@ -24,6 +24,8 @@ public class Main {
         default1.post("My father is the king of pirate Gol D. Roger");
         default2.post("I'm Monkey D. Luffy. The guy who will become the king of the pirates.");
         default2.post("I'm the captain of Strawhat Pirates");
+        default3.post("My name is Iliyas. I'm a student of SDU. I'm 19 years old.");
+        default4.post("I'm Natsu Dragnyl. The guy who will become the king of the fire dragons.");
         profiles.add(default1);
         profiles.add(default2);
         profiles.add(default3);
@@ -96,6 +98,7 @@ public class Main {
         System.out.println("5. Show list of maximum like posts");
         System.out.println("6. Show list of Descending like posts");
         System.out.println("7. Show list of highest Common subscribers");
+        System.out.println("8. Sort posts by likes");
         int answer = scanner.nextInt();
         scanner.nextLine();
         switch (answer) {
@@ -118,12 +121,19 @@ public class Main {
             }
             case 5 -> {
                 showMaxLikePosts();
+                profilePage(profile);
             }
             case 6 -> {
                 showDescendingLikePosts();
+                profilePage(profile);
             }
             case 7 -> {
                 showMaxCommonSubscribers();
+                profilePage(profile);
+            }
+            case 8 -> {
+                profile.sortPostsMerge();
+                profilePage(profile);
             }
             case 0 -> loginPage();
 
@@ -153,7 +163,7 @@ public class Main {
 
         System.out.println("What do you want to do?");
         System.out.println("0. Go back");
-        if (profiles.get(answer - 1).getFollowers().contains(profile1)) {
+        if (profiles.get(answer - 1).getFollowers().contains(currentProfile)) {
             System.out.println("1. Unfollow");
         } else {
             System.out.println("1. Follow");
@@ -169,16 +179,16 @@ public class Main {
         scanner.nextLine();
         switch (answer2) {
             case 1 -> {
-                if (profiles.get(answer - 1).getFollowers().contains(profiles.get(answer - 1))) {
+                if (profiles.get(answer - 1).getFollowers().contains(currentProfile)) {
                     for (Profile profile : profiles) {
                         if (profile.getEmail().equals(profiles.get(answer - 1).getEmail())) {
-                            profile.getFollowers().remove(profiles.get(answer - 1));
+                            profile.getFollowers().remove(currentProfile);
                         }
                     }
                 } else {
                     for (Profile profile : profiles) {
                         if (profile.getEmail().equals(profiles.get(answer - 1).getEmail())) {
-                            profile.getFollowers().add(profiles.get(answer - 1));
+                            profile.getFollowers().add(currentProfile);
                         }
                     }
                 }
@@ -335,10 +345,6 @@ System.out.println("Enter the number of place: ");
             }
         }
     }
-    /*
-    checking which your subscriber has the highest number of common subscribers with count of your subscribers
-    если нет общих подписчиков, то выводит сообщение "You don't have common subscribers"
-     */
     private static void showMaxCommonSubscribers() {
         boolean flag = true;
         while(flag) {
@@ -384,4 +390,5 @@ System.out.println("Enter the number of place: ");
             }
         }
     }
+
 }
